@@ -102,8 +102,12 @@ impl<'a> NoiseMapBuilder<'a> for CylinderMapBuilder<'a> {
         let x_step = angle_extent / width as f64;
         let y_step = height_extent / height as f64;
 
+        let points : Vec<[f64; 3]>;
+
         for y in 0..height {
             let current_height = self.height_bounds.0 + y_step * y as f64;
+
+            let mut values = [[0.; 3]; width];
 
             for x in 0..width {
                 let current_angle = self.angle_bounds.0 + x_step * x as f64;
@@ -111,14 +115,19 @@ impl<'a> NoiseMapBuilder<'a> for CylinderMapBuilder<'a> {
                 let point_x = current_angle.to_radians().cos();
                 let point_z = current_angle.to_radians().sin();
 
-                let value = self.source_module.get([point_x, current_height, point_z]);
+//                let value = self.source_module.get([point_x, current_height, point_z]);
+                values[x] = [point_x, current_height, point_z];
 
-                println!(
-                    "calculated value {} at {}, {}, {}",
-                    value, point_x, current_height, point_z
-                );
+//                println!(
+//                    "calculated value {} at {}, {}, {}",
+//                    value, point_x, current_height, point_z
+//                );
 
-                result_map.set_value(x, y, value);
+//                result_map.set_value(x, y, value);
+            }
+
+            for x in values {
+                result_map.set_value(x, y, values[x]);
             }
         }
 
@@ -204,6 +213,8 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
 
         let x_step = x_extent / width as f64;
         let y_step = y_extent / height as f64;
+
+        let points : Vec<[f64; 3]>;
 
         for y in 0..height {
             let current_y = self.y_bounds.0 + y_step * y as f64;
